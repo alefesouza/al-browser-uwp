@@ -1,7 +1,7 @@
 Al Browser
 =======
 
-This is a simples browser for Universal Windows Platform in C#.
+This is a simple browser for Universal Windows Platform in C#.
 
 I developed initially to earn points in Microsoft TechRewards, in a challenge of develop my own browser.
 
@@ -11,10 +11,10 @@ It have History and Favorites using database, and are available in English and P
 
 ##### Portuguese
 
-Esse é um simples navegador para Universal Windows Platform em C#.
+Esse Ã© um simples navegador para Universal Windows Platform em C#.
 
-Desenvolvi ele inicialmente para ganhar pontos no Microsoft TechRewards, em um desafio de desenvolver meu próprio navegador.
+Desenvolvi ele inicialmente para ganhar pontos no Microsoft TechRewards, em um desafio de desenvolver meu prÃ³prio navegador.
 
-Você pode baixá-lo na [Windows Store](https://www.microsoft.com/store/apps/9nblggh5hlw4).
+VocÃª pode baixÃ¡-lo na [Windows Store](https://www.microsoft.com/store/apps/9nblggh5hlw4).
 
-Ele possui histórico e favoritos usando base de dados, e está disponível nos idiomas Inglês e Português.
+Ele possui histÃ³rico e favoritos usando base de dados, e estÃ¡ disponÃ­vel nos idiomas InglÃªs e PortuguÃªs.
