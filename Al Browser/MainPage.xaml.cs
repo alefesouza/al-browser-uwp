@@ -6,10 +6,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -31,11 +34,24 @@ namespace Al_Browser
     {
         public static SQLiteConnection objConn = new SQLiteConnection("AlBrowser.db");
         ObservableCollection<string> Items = new ObservableCollection<string>();
+        ObservableCollection<Tab> ItemsTabs = new ObservableCollection<Tab>();
         ResourceLoader loader = new ResourceLoader();
+        int actualindex = 0;
+        DispatcherTimer tmr = new DispatcherTimer();
 
         public MainPage()
         {
             this.InitializeComponent();
+
+            ItemsTabs.Add(new Tab(0, "Google", "http://google.com"));
+
+            Binding myBinding = new Binding();
+            myBinding.Source = ItemsTabs;
+            Tabs.SetBinding(ItemsControl.ItemsSourceProperty, myBinding);
+            Tabs.SelectedIndex = 0;
+
+            tmr.Interval = TimeSpan.FromSeconds(1);
+            tmr.Tick += ChangeTab;
         }
 
         private void CommandBar_Opening(object sender, object e)
@@ -60,11 +76,8 @@ namespace Al_Browser
             }
             else
             {
-                if (!args.QueryText.StartsWith("http"))
-                {
-                    AddressBar.Text = "http://" + args.QueryText;
-                }
-                WView.Source = new Uri(AddressBar.Text);
+                string url = args.QueryText.StartsWith("http") ? args.QueryText : "http://" + args.QueryText;
+                WView.Source = new Uri(url);
             }
         }
 
@@ -94,32 +107,26 @@ namespace Al_Browser
 
         private void WView_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
-            UpdateCB();
+            UpdateCB(1);
             AddressBar.Text = WView.Source.ToString();
-            Favicon.Visibility = Visibility.Collapsed;
-            Loading.Visibility = Visibility.Visible;
         }
 
         private void WView_ContentLoading(WebView sender, WebViewContentLoadingEventArgs args)
         {
-            UpdateCB();
+            UpdateCB(1);
             AddressBar.Text = WView.Source.ToString();
         }
 
         private void WView_LoadCompleted(object sender, NavigationEventArgs e)
         {
-            UpdateCB();
+            UpdateCB(0);
 
             string historySQL = "SELECT * FROM history";
             var history = objConn.Prepare(historySQL);
 
-            Favicon.Source = new BitmapImage(new Uri("http://google.com/s2/favicons?domain=" + WView.Source.ToString()));
-            Favicon.Visibility = Visibility.Visible;
-            Loading.Visibility = Visibility.Collapsed;
-
             while (history.Step() == SQLiteResult.ROW)
             {
-                if(history[2].ToString().Equals(WView.Source.ToString()))
+                if (history[2].ToString().Equals(WView.Source.ToString()))
                 {
                     objConn.Prepare("UPDATE history SET times=" + (int.Parse(history[3].ToString()) + 1) + " WHERE url='" + WView.Source.ToString() + "';").Step();
                     return;
@@ -180,7 +187,7 @@ namespace Al_Browser
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            ShowMessage(loader.GetString("AppDeveloped") + " Alefe Souza");
+            ShowMessage(loader.GetString("AppDeveloped") + " Alefe Souza", true);
         }
 
         public void ChangeFavButton(bool isFav)
@@ -197,7 +204,7 @@ namespace Al_Browser
             }
         }
 
-        private void UpdateCB()
+        private void UpdateCB(int fase)
         {
             string QuestionPhrase = @"SELECT * FROM favorites";
             var favorites = objConn.Prepare(QuestionPhrase);
@@ -215,13 +222,33 @@ namespace Al_Browser
 
             ChangeFavButton(isFav);
 
-            if (WView.DocumentTitle.Equals(""))
+            if (fase != 1)
             {
-                Title.Text = WView.Source.ToString().Split('/')[2];
-            }
-            else
-            {
-                Title.Text = WView.DocumentTitle;
+                try
+                {
+                    Tab tab = Tabs.SelectedItem as Tab;
+
+                    if (WView.DocumentTitle.Equals(""))
+                    {
+                        tab.Title = WView.Source.ToString().Split('/')[2];
+                    }
+                    else
+                    {
+                        tab.Title = WView.DocumentTitle;
+                    }
+
+                    tab.Url = WView.Source.ToString();
+                    tab.Favicon = WView.Source.ToString();
+
+                    ItemsTabs[actualindex] = tab;
+                    Binding myBinding = new Binding();
+                    myBinding.Source = ItemsTabs;
+                    Tabs.SetBinding(ItemsControl.ItemsSourceProperty, myBinding);
+                    Tabs.SelectedIndex = actualindex;
+                }
+                catch (Exception ex)
+                {
+                }
             }
 
             CBBack.IsEnabled = WView.CanGoBack;
@@ -231,11 +258,19 @@ namespace Al_Browser
             CBForward2.IsEnabled = WView.CanGoForward;
         }
 
-        public async void ShowMessage(string message)
+        public async void ShowMessage(string message, bool credits)
         {
             MessageDialog md = new MessageDialog(message);
-            md.Commands.Add(new UICommand("GitHub", new UICommandInvokedHandler(CommandHandlers)) { Id = 0 });
-            md.Commands.Add(new UICommand(loader.GetString("Close")) { Id = 1 });
+            if(credits)
+            {
+                md.Commands.Add(new UICommand("GitHub", new UICommandInvokedHandler(CommandHandlers)) { Id = 0 });
+                md.Commands.Add(new UICommand(loader.GetString("Close")) { Id = 1 });
+            }
+            else
+            {
+                md.Commands.Add(new UICommand(loader.GetString("Yes"), new UICommandInvokedHandler(CommandHandlers)) { Id = 0 });
+                md.Commands.Add(new UICommand(loader.GetString("No")) { Id = 1 });
+            }
 
             md.DefaultCommandIndex = 0;
             md.CancelCommandIndex = 1;
@@ -250,12 +285,15 @@ namespace Al_Browser
                 case "GitHub":
                     WView.Source = new Uri("http://github.com/alefesouza");
                     break;
+                case "Yes":
+                case "Sim":
+                    Application.Current.Exit();
+                    break;
             }
         }
 
         private void FavoritesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
             if (FavoritesList.SelectedIndex != -1)
             {
                 Favorite f = e.AddedItems[0] as Favorite;
@@ -306,6 +344,60 @@ namespace Al_Browser
             string historySQL = "DELETE FROM history";
             objConn.Prepare(historySQL).Step();
             UpdateLeft("history", loader.GetString("History"));
+        }
+
+        private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            tmr.Start();
+        }
+
+        public void ChangeTab(object sender, object e)
+        {
+            if(actualindex != Tabs.SelectedIndex && Tabs.SelectedIndex != -1)
+            {
+                Tab tab = Tabs.SelectedItem as Tab;
+                WView.Source = new Uri(tab.Url);
+                actualindex = Tabs.SelectedIndex;
+            }
+            tmr.Stop();
+        }
+
+        private void NewTab_Click(object sender, RoutedEventArgs e)
+        {
+            CreateNewTab("Google", "http://google.com");
+        }
+
+        public void CreateNewTab(string title, string url)
+        {
+            ItemsTabs.Add(new Tab(actualindex, title, url));
+
+            actualindex = ItemsTabs.Count;
+
+            Binding myBinding = new Binding();
+            myBinding.Source = ItemsTabs;
+            Tabs.SetBinding(ItemsControl.ItemsSourceProperty, myBinding);
+
+            Tabs.SelectedIndex = ItemsTabs.Count - 1;
+            AddressBar.Focus(FocusState.Programmatic);
+        }
+
+        private void CloseTab_Click(object sender, RoutedEventArgs e)
+        {
+            if(ItemsTabs.Count == 1)
+            {
+                ShowMessage(loader.GetString("DoYouExit"), false);
+            }
+            else
+            {
+                Button button = sender as Button;
+                Tab tab = button.DataContext as Tab;
+
+                ItemsTabs.Remove(tab);
+                Binding myBinding = new Binding();
+                myBinding.Source = ItemsTabs;
+                Tabs.SetBinding(ItemsControl.ItemsSourceProperty, myBinding);
+                Tabs.SelectedIndex = ItemsTabs.Count - 1;
+            }
         }
     }
 }

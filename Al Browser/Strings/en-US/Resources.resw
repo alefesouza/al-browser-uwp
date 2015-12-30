@@ -162,6 +162,9 @@
   <data name="CBRefresh2.Label" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="CBUnFavorite.Label" xml:space="preserve">
+    <value>Unfavorite</value>
+  </data>
   <data name="CBUnFavorite.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Unfavorite</value>
   </data>
@@ -170,6 +173,12 @@
   </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
+  </data>
+  <data name="CloseTab.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Close tab</value>
+  </data>
+  <data name="DoYouExit" xml:space="preserve">
+    <value>Do you want to close this app?</value>
   </data>
   <data name="Favorites" xml:space="preserve">
     <value>Favorites</value>
@@ -183,10 +192,16 @@
   <data name="NameFavorite.Text" xml:space="preserve">
     <value>Name:</value>
   </data>
+  <data name="NewTab.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>New tab</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
   <data name="Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
-  <data name="UnFavoriteCB.Label" xml:space="preserve">
-    <value>Unfavorite</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>

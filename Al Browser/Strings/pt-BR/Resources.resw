@@ -141,6 +141,9 @@
   <data name="CBFavorite.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Favorito</value>
   </data>
+  <data name="CBFavoriteCB.Label" xml:space="preserve">
+    <value>Desmarcar favorito</value>
+  </data>
   <data name="CBFavorites.Label" xml:space="preserve">
     <value>Favoritos</value>
   </data>
@@ -162,6 +165,9 @@
   <data name="CBRefresh2.Label" xml:space="preserve">
     <value>Recarregar</value>
   </data>
+  <data name="CBUnFavorite.Label" xml:space="preserve">
+    <value>Desmarcar favorito</value>
+  </data>
   <data name="CBUnFavorite.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Desmarcar favorito</value>
   </data>
@@ -170,6 +176,12 @@
   </data>
   <data name="Close" xml:space="preserve">
     <value>Fechar</value>
+  </data>
+  <data name="CloseTab.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Fechar guia</value>
+  </data>
+  <data name="DoYouExit" xml:space="preserve">
+    <value>Deseja encerrar o aplicativo?</value>
   </data>
   <data name="Favorites" xml:space="preserve">
     <value>Favoritos</value>
@@ -183,10 +195,16 @@
   <data name="NameFavorite.Text" xml:space="preserve">
     <value>Nome:</value>
   </data>
+  <data name="NewTab.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Nova guia</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Não</value>
+  </data>
   <data name="Refresh" xml:space="preserve">
     <value>Recarregar</value>
   </data>
-  <data name="UnFavoriteCB.Label" xml:space="preserve">
-    <value>Desmarcar favorito</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Sim</value>
   </data>
 </root>

@@ -14,15 +14,43 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Background="#E6E6E6" Grid.Row="0">
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <ProgressRing Margin="0 5" Name="Loading" Width="16" Height="16" IsActive="True"></ProgressRing>
-                <Image Margin="0 5" Name="Favicon" Width="16" Height="16" Visibility="Collapsed"></Image>
-                <TextBlock Margin="10 5" Name="Title"></TextBlock>
-            </StackPanel>
+        <StackPanel Background="#E6E6E6" Grid.Row="0" Height="50">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ListView x:Name="Tabs" Style="{StaticResource VerticalListView}"
+              IsItemClickEnabled="True" 
+              SelectionMode="Single" xmlns:m="using:Al_Browser.Models" SelectionChanged="Tabs_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="m:Tab">
+                            <Border Width="200" Padding="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Image Margin="0 5" Source="{x:Bind Favicon}" Width="16" Height="16"></Image>
+                                    <TextBlock Margin="10 5" Text="{x:Bind Title}" TextTrimming="WordEllipsis" Grid.Column="1"></TextBlock>
+                                    <AppBarButton Click="CloseTab_Click" x:Uid="CloseTab" Grid.Column="2" Width="30" Height="30">
+                                        <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="18" HorizontalAlignment="Center" Margin="10 -7 10 0" />
+                                    </AppBarButton>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <AppBarButton Grid.Column="1" x:Uid="NewTab" Name="NewTab" Click="NewTab_Click">
+                    <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="18" HorizontalAlignment="Center" />
+                </AppBarButton>
+            </Grid>
         </StackPanel>
-        
-        <CommandBar HorizontalContentAlignment="Stretch" Opening="CommandBar_Opening" Closing="CommandBar_Closing" Grid.Row="1">
+
+        <CommandBar HorizontalContentAlignment="Stretch" Opening="CommandBar_Opening" Closing="CommandBar_Closing" Grid.Row="1" Background="#8adbdb">
             <CommandBar.Content>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -91,7 +119,7 @@
                     <TextBlock FontSize="20" FontWeight="Bold" Name="LeftTitle" Grid.Row="0" Grid.Column="0" Margin="10"></TextBlock>
 
                     <Button x:Uid="Clear" Name="Clear" Click="Clear_Click"  Grid.Row="0" Grid.Column="1" Margin="10" />
-                    
+
                     <ListBox Name="FavoritesList" xmlns:m="using:Al_Browser.Models" SelectionChanged="FavoritesList_SelectionChanged" Grid.Row="1" Grid.ColumnSpan="2">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="m:Favorite">
@@ -103,7 +131,6 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                                         <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
 
                                     <Image Source="{x:Bind Favicon}" Width="16" Height="16" Grid.Column="0" Grid.RowSpan="2" />
@@ -118,7 +145,7 @@
             </SplitView.Pane>
 
             <SplitView.Content>
-                <WebView Source="http://google.com.br" Name="WView" NavigationStarting="WView_NavigationStarting" LoadCompleted="WView_LoadCompleted" ContentLoading="WView_ContentLoading"></WebView>
+                <WebView Source="http://google.com" Name="WView" NavigationStarting="WView_NavigationStarting" LoadCompleted="WView_LoadCompleted" ContentLoading="WView_ContentLoading"></WebView>
             </SplitView.Content>
         </SplitView>
 
