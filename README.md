@@ -9,6 +9,18 @@ You can download it at [Windows Store](https://www.microsoft.com/store/apps/9nbl
 
 It have History and Favorites using database, tabs, and is available in English and Portuguese.
 
+Screenshots
+-----
+
+| Desktop |
+|-|
+| <img src="./Screenshots/1.png"> |
+| <img src="./Screenshots/2.png"> |
+| <img src="./Screenshots/3.png"> |
+| <img src="./Screenshots/4.png"> |
+| <img src="./Screenshots/5.png"> |
+| <img src="./Screenshots/6.png"> |
+
 ##### Portuguese
 
 Esse é um simples navegador para Universal Windows Platform em C#.
